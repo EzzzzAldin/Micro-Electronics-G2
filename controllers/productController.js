@@ -33,11 +33,30 @@ const addProductController = async (req, res) => {
 
 const getAllProductsController = async (req, res) => {
   try {
-  } catch (error) {}
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ msg: "Server Error" });
+  }
 };
 const searchProductController = async (req, res) => {
   try {
-  } catch (error) {}
+    const { id } = req.query;
+
+    if (!id) return res.status(400).json({ msg: "Missing ID" });
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: "Invalid ID format" });
+    }
+
+    const product = await Product.findById(id);
+
+    if (!product) return res.status(404).json({ msg: "Product not found" });
+
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ msg: "Server Error" });
+  }
 };
 
 module.exports = {

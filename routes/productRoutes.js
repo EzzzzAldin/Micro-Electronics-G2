@@ -9,5 +9,7 @@ const {
 } = require("../controllers/productController");
 
 router.post("/product", addProductController);
+router.get("/product", getAllProductsController);
+router.get("/product/search", searchProductController);
 
 module.exports = router;
