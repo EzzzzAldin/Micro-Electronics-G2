@@ -3,13 +3,19 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const registerSchema = require("./validation/registerSchema");
+
 const register = async (req, res) => {
   try {
+    const { error, value } = registerSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
     // Get Data
-    const { username, email, password, role } = req.body;
+    const { username, email, password, role } = value;
     // Validated Data
-    if (!username || !email || !password)
-      return res.status(400).json({ msg: "Missing Data" });
+    // if (!username || !email || !password)
+    //   return res.status(400).json({ msg: "Missing Data" });
 
     const existUser = await User.findOne({ email });
     if (existUser)
