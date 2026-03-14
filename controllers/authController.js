@@ -3,7 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const registerSchema = require("./validation/registerSchema");
+const { registerSchema, loginSchema } = require("./validation/authValidation");
 
 const register = async (req, res) => {
   try {
@@ -11,6 +11,14 @@ const register = async (req, res) => {
       abortEarly: false,
       stripUnknown: true,
     });
+
+    if (error) {
+      return res.status(400).json({
+        msg: error.details.map((err) => err.message),
+      });
+    }
+
+    // return console.log(value);
     // Get Data
     const { username, email, password, role } = value;
     // Validated Data
@@ -41,7 +49,18 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { error, value } = loginSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        msg: error.details.map((err) => err.message),
+      });
+    }
+
+    const { email, password } = value;
 
     // Validated Data
     if (!email || !password)
